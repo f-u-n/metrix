@@ -1,0 +1,22 @@
+{
+  "name": "fun-metrix",
+  "version": "1.0.0",
+  "description": "Tool to run against f-u-n/playtime submissions to get cool metrics about your solution",
+  "main": "core/metrix.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/f-u-n/metrix.git"
+  },
+  "author": "f-u-n",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/f-u-n/metrix/issues"
+  },
+  "homepage": "https://github.com/f-u-n/metrix#readme",
+  "dependencies": {
+    "esprima": "^3.1.0"
+  }
+}
