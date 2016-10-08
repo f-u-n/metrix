@@ -4,7 +4,7 @@
   "description": "Tool to run against f-u-n/playtime submissions to get cool metrics about your solution",
   "main": "core/metrix.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha"
   },
   "repository": {
     "type": "git",
@@ -18,5 +18,8 @@
   "homepage": "https://github.com/f-u-n/metrix#readme",
   "dependencies": {
     "esprima": "^3.1.0"
+  },
+  "devDependencies": {
+    "mocha": "^3.1.2"
   }
 }
