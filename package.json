@@ -4,7 +4,7 @@
   "description": "Tool to run against f-u-n/playtime submissions to get cool metrics about your solution",
   "main": "core/metrix.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha"
+    "test": "./node_modules/.bin/mocha --timeout 15000"
   },
   "repository": {
     "type": "git",
