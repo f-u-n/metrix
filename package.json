@@ -18,6 +18,8 @@
   "homepage": "https://github.com/f-u-n/metrix#readme",
   "dependencies": {
     "benchmark": "^2.1.1",
+    "chalk": "^1.1.3",
+    "cli-table": "^0.3.1",
     "esprima": "^3.1.0"
   },
   "devDependencies": {
