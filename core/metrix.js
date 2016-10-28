@@ -3,7 +3,7 @@
  * provides some metrics for js submission
  * usage: metrix.js <solution>
  *
- * @solution:  The full path to the playtime challenge
+ * @challengePath:  The full path to the playtime challenge
  *
  * Example: node metrix /home/username/dev/playtime/fizz_buzz/
  * 
@@ -12,39 +12,25 @@
 
 const challengeDir = process.argv[2]
 const fs = require('fs')
-const path = require('path')
 const parser = require('./parser')
 const reporter = require('./reporter')
 const benchRunner = require('./benchRunner')
-
-const getDirectories = srcPath => {
-  return fs.readdirSync(srcPath).filter(file => fs.statSync(path.join(srcPath, file)).isDirectory())
-}
-
-const getFiles = srcPath => {
-  return fs.readdirSync(srcPath).filter(file => fs.statSync(path.join(srcPath, file)).isFile())
-}
+const { getDirectories, getFiles, getPath } = require('./lib/fsUtils')
 
 const parseSolutions = challengeDir => {
   const solutions = getDirectories(challengeDir)
   return results = solutions.map((solutionDir) => {
-    const files = getFiles(`${challengeDir}/${solutionDir}/`).filter(file => /.js$/.test(file))
+    const files = getFiles(getPath([challengeDir, solutionDir])).filter(file => /.js$/.test(file))
     if (files.length !== 1) {
       return { error: `expected 1 .js file in ${solutionDir} but found ${files.length}` }
     }
-    return Object.assign({ name: solutionDir }, parser(fs.readFileSync(path.join(challengeDir, solutionDir, files[0]), 'utf8')))
+    return Object.assign({ name: solutionDir }, parser(fs.readFileSync(getPath([challengeDir, solutionDir, files[0]]), 'utf8')))
   })
 }
 
 const benchmarkSolutions = challengeDir => {
-  const files = getFiles(challengeDir).filter(file => /.bench.js$/.test(file))
-  if (files.length !== 1) {
-    return { error: `expected 1 .bench.js file in ${challengeDir} but found ${files.length}` }
-  }
-  const benchmarkFile = challengeDir.concat(files[0])
   return {
-    benchmarkFile,
-    results: benchRunner(benchmarkFile)
+    results: benchRunner(challengeDir)
   }
 }
 
@@ -81,7 +67,6 @@ if (shouldRun) {
   if (benchmarkedSolutions.error != null) {
     reporter([benchmarkedSolutions])
   } else {
-    reporter([{ info: `Benchmark file: ${benchmarkedSolutions.benchmarkFile}` }])
     benchmarkedSolutions.results.then(result => result).then(results => {
       reporter(results.map(result => {
         return { table: {
@@ -90,7 +75,7 @@ if (shouldRun) {
           }
         }
       }))
-    }).catch(err => err)
+    }).catch(err => reporter([ err ]))
   }
 } else {
   reporter(errors)
