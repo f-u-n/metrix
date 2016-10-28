@@ -1,19 +1,45 @@
 const Benchmark = require('benchmark')
 const isBench = /\.bench\.js$/
+const isJs = /\.js$/
+const { getDirectories, getFiles, getPath } = require('./lib/fsUtils')
 
-module.exports = file => {
+const buildTests = path => {
+  const benchFile = getFiles(path).filter(file => isBench.test(file))[0]
+  if (!benchFile) {
+    return {
+      error: `benchmarkRunner could not find a .bench.js file in ${path}`
+    }
+  }
+  const { name, testFactory } = require(getPath([path, benchFile]))
+  const tests = {}
+  getDirectories(path).forEach(solution => {
+    if (solution !== 'test') {
+      const files = getFiles(getPath([path, solution])).filter(file => isJs.test(file))
+      if (files.length === 1) {
+        tests[solution] = () => {
+          const fn = require(getPath([path, solution, files[0]]))
+          testFactory(fn)
+        }
+      }
+    }
+  })
+  return {
+    name,
+    tests
+  }
+}
+
+module.exports = path => {
   return new Promise(
     (resolve, reject) => {
-      if (!file || !isBench.test(file)) {
-        reject({
-          error: 'benchmarkRunner did not receive a .bench.js file'
-        })
+      const testSuite = buildTests(path)
+      if (testSuite.error) {
+        reject(testSuite)
       }
       const results = []
-      const test = require(file)
-      const suite = new Benchmark.Suite(test.name)
-      Object.keys(test.tests).forEach(key => {
-        suite.add(key, test.tests[key], {
+      const suite = new Benchmark.Suite(testSuite.name)
+      Object.keys(testSuite.tests).forEach(key => {
+        suite.add(key, testSuite.tests[key], {
           onComplete: result => {
             results.push({
               'name': result.target.name,
