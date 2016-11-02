@@ -11,14 +11,21 @@ describe('benchRunner', function() {
   })
   it('should return array of all results', (done) => {
     benchRunner(benchmark).then(result => {
-      assert.equal(result.length, 2)
+      assert.equal(result.length, 3)
       done()
     }).catch()
   })
-  it('should return results containing correct tests', (done) => {
+  it('should return results containing all tests', (done) => {
     benchRunner(benchmark).then(result => {
       assert.equal(result[0].name, 'concat')
-      assert.equal(result[1].name, 'spread')
+      assert.equal(result[1].name, 'fake')
+      assert.equal(result[2].name, 'spread')
+      done()
+    }).catch()
+  })
+  it('should return warning results for tests that do not run', (done) => {
+    benchRunner(benchmark).then(result => {
+      assert.equal(result[1].hz, 'Code does not run. Check the file has a modules.export statement')
       done()
     }).catch()
   })
