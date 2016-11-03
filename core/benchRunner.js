@@ -41,9 +41,15 @@ module.exports = path => {
       Object.keys(testSuite.tests).forEach(key => {
         suite.add(key, testSuite.tests[key], {
           onComplete: result => {
+            const formatOrWarn = hz => {
+              if (!hz) {
+                return 'Code does not run. Check the file has a modules.export statement'
+              }
+              return Benchmark.formatNumber(hz.toFixed(0))
+            }
             results.push({
               'name': result.target.name,
-              'hz': Benchmark.formatNumber(result.target.hz.toFixed(0))
+              'hz': formatOrWarn(result.target.hz)
             })
           }
         })

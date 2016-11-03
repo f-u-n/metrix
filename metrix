@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /**
  * metrix.js
  * provides some metrics for js submission
@@ -12,10 +14,10 @@
 
 const challengeDir = process.argv[2]
 const fs = require('fs')
-const parser = require('./parser')
-const reporter = require('./reporter')
-const benchRunner = require('./benchRunner')
-const { getDirectories, getFiles, getPath } = require('./lib/fsUtils')
+const parser = require('./core/parser')
+const reporter = require('./core/reporter')
+const benchRunner = require('./core/benchRunner')
+const { getDirectories, getFiles, getPath } = require('./core/lib/fsUtils')
 
 const parseSolutions = challengeDir => {
   const solutions = getDirectories(challengeDir)
